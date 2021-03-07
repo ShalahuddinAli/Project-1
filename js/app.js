@@ -2,33 +2,60 @@ $(() => {
 	const $table = $("<table>");
 	$table.attr("id", "ring").attr("cellspacing", "0");
 	$("body").append($table);
+	const rowCell = 10;
 
-	for (let i = 0; i < 11; i++) {
+	for (let i = 0; i < rowCell; i++) {
 		//rows
-		const $row = $("<tr>");
+		const $row = $("<tr>").attr("id", `tr${i}`);
 		$table.append($row);
-		for (
-			let j = 0;
-			j < 11;
-			j++ //collumn
-		) {
-			const $column = $("<td>");
-			$column.attr("id", `${i}${j}`);
-			$table.append($column);
+		for (let j = 0; j < rowCell; j++) {
+			const $cell = $("<td>");
+			$cell.attr("id", `tr${i}td${j}`);
+			$table.append($cell);
 		}
 	}
-	let snakePos = { x: 5, y: 5 };
+	let snakePos = { tr: 4, td: 5 };
+	let trValue = snakePos.tr;
+	let tdValue = snakePos.td;
+	console.log($("#tr" + trValue + "td" + tdValue));
 
-	const drawSnake = () => {};
+	const drawSnake = () => {
+		let drawSnakePos = $("#tr" + trValue + "td" + tdValue);
+		drawSnakePos.attr("class", "snake");
+		console.log(trValue);
+		if (
+			trValue === -1 ||
+			trValue === rowCell ||
+			tdValue === -1 ||
+			tdValue === rowCell
+		)
+			alert("GAME OVER!");
+	};
 
-	// switch (control) {
-	// 	case "Up":
-	// 		return { x: x, y: y - 1 };
-	// 	case "Right":
-	// 		return { x: x + 1, y: y };
-	// 	case "Down":
-	// 		return { x: x, y: y + 1 };
-	// 	case "Left":
-	// 		return { x: x - 1, y: y };
-	// }
+	drawSnake();
+
+	document.addEventListener("keydown", (e) => {
+		switch (e.keyCode) {
+			case 38:
+				$("td").removeClass("snake");
+				trValue--;
+				drawSnake();
+				break;
+			case 39:
+				$("td").removeClass("snake");
+				tdValue++;
+				drawSnake();
+				break;
+			case 40:
+				$("td").removeClass("snake");
+				trValue++;
+				drawSnake();
+				break;
+			case 37:
+				$("td").removeClass("snake");
+				tdValue--;
+				drawSnake();
+				break;
+		}
+	});
 });
