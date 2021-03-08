@@ -2,7 +2,7 @@ $(() => {
 	const $table = $("<table>");
 	$table.attr("id", "ring").attr("cellspacing", "0");
 	$("body").append($table);
-	const rowCell = 10;
+	const rowCell = 20;
 
 	for (let i = 0; i < rowCell; i++) {
 		//rows
@@ -14,9 +14,16 @@ $(() => {
 			$table.append($cell);
 		}
 	}
-	let snakePos = { tr: 4, td: 5 };
-	let trValue = snakePos.tr;
-	let tdValue = snakePos.td;
+	const $start = $("<button>").text("Start").attr("id", "start");
+	$("body").append($start);
+
+	const snakePos = [
+		{ tr: 4, td: 5 },
+		{ tr: 3, td: 5 },
+		{ tr: 2, td: 5 },
+		{ tr: 1, td: 5 },
+		{ tr: 0, td: 5 },
+	];
 
 	let randPelletteTrVal = Math.floor(Math.random() * rowCell);
 	let randPelletteTdVal = Math.floor(Math.random() * rowCell);
@@ -24,86 +31,107 @@ $(() => {
 	let $score = $("div").attr("id", "score").text(0);
 	let currentScore = 0;
 
-	console.log(currentScore);
+	// auto move
 
 	// random pellette
 	const randomPellette = () => {
 		randPelletteTrVal = Math.floor(Math.random() * rowCell);
 		randPelletteTdVal = Math.floor(Math.random() * rowCell);
-		let $drawPellete = $("#tr" + randPelletteTrVal + "td" + randPelletteTdVal);
-		$drawPellete.attr("class", "pellette");
+		if (
+			$("#tr" + randPelletteTrVal + "td" + randPelletteTdVal).attr("class") !==
+			"snake"
+		) {
+			let $drawPellete = $(
+				"#tr" + randPelletteTrVal + "td" + randPelletteTdVal
+			);
+			$drawPellete.attr("class", "pellette");
+		} else {
+			randomPellette();
+			console.log("clash");
+		}
 	};
 	randomPellette();
 
 	const updateScore = () => {
+		// add up to score value
 		currentScore++;
 		$score = $("div").attr("id", "score").text(currentScore);
 	};
+	//add snake tails
+	const addSnake = () => {
+		snakePos.push({});
+		console.log(snakePos);
+	};
 
 	const drawSnake = () => {
-		if ($("#tr" + trValue + "td" + tdValue).attr("class") === "pellette") {
+		if (
+			$("#tr" + snakePos[0].tr + "td" + snakePos[0].td).attr("class") ===
+			"pellette"
+		) {
+			addSnake(); // snake length increasess
 			randomPellette(); // make new pellette once its being hit
 			updateScore();
-			console.log(currentScore);
+
+			console.log(snakePos);
+		} else {
+			$("td").removeClass("snake");
 		}
-		let $drawSnakePos = $("#tr" + trValue + "td" + tdValue);
-		$drawSnakePos.attr("class", "snake");
-		console.log(trValue);
+
+		for (let i = 0; i < snakePos.length; i++) {
+			let $drawSnakePos = $("#tr" + snakePos[i].tr + "td" + snakePos[i].td);
+			$drawSnakePos.attr("class", "snake");
+		}
+
+		//snake hit its own body
+		snakePos.forEach((i, j) => {
+			if (j > 0) {
+				if (snakePos[0].tr == i.tr && snakePos[0].td == i.td) {
+					alert("GAME OVER!");
+				}
+			}
+		});
 		if (
-			trValue === -1 || // going outside of top border
-			trValue === rowCell || // going outside of bottom border
-			tdValue === -1 || // going outside of left border
-			tdValue === rowCell //going outside of right border
+			snakePos[0].tr === -1 || // going outside of top border
+			snakePos[0].tr === rowCell || // going outside of bottom border
+			snakePos[0].td === -1 || // going outside of left border
+			snakePos[0].td === rowCell //going outside of right border
 		)
 			alert("GAME OVER!");
 	};
 
 	drawSnake();
-
 	document.addEventListener("keydown", (e) => {
 		switch (e.keyCode) {
 			case 38:
-				$("td").removeClass("snake");
-				trValue--;
+				snakePos.unshift({ tr: snakePos[0].tr - 1, td: snakePos[0].td });
+				snakePos.pop();
 				drawSnake();
 				break;
 			case 39:
-				$("td").removeClass("snake");
-				tdValue++;
+				snakePos.unshift({ tr: snakePos[0].tr, td: snakePos[0].td + 1 });
+				snakePos.pop();
 				drawSnake();
 				break;
 			case 40:
-				$("td").removeClass("snake");
-				trValue++;
+				snakePos.unshift({ tr: snakePos[0].tr + 1, td: snakePos[0].td });
+				snakePos.pop();
 				drawSnake();
 				break;
 			case 37:
-				$("td").removeClass("snake");
-				tdValue--;
+				snakePos.unshift({ tr: snakePos[0].tr, td: snakePos[0].td - 1 });
+				snakePos.pop();
 				drawSnake();
 				break;
 		}
 	});
 
-	// let randPelletteTrVal = Math.floor(Math.random() * rowCell);
-	// let randPelletteTdVal = Math.floor(Math.random() * rowCell);
-	// const randomPellette = () => {
-	// 	randPelletteTrVal = Math.floor(Math.random() * rowCell);
-	// 	randPelletteTdVal = Math.floor(Math.random() * rowCell);
-	// 	// console.log(randPelletteTdVal);
-	// 	// console.log(randPelletteTrVal);
-	// 	let $drawPellete = $("#tr" + randPelletteTrVal + "td" + randPelletteTdVal);
-	// 	$drawPellete.attr("class", "pellette");
-	// };
-	// randomPellette();
-	//hit pellette
+	// setInterval(() => {
+	// 	drawSnake();
+	// }, 1000);
 	//start button/reset
-	// score
-	// const updateScore = () => {
-	// 	currentScore++;
-	// 	$score = $("div").attr("id", "score").text(currentScore);
-	// };
 	//snake auto moves
-	//snake tails
-	//snake hit its own body
+
+	// const addSnake = () => {
+	// 	snakePos.push({ tr: prevTrValue, td: prevTdValue });
+	// };
 });
