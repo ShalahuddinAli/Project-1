@@ -17,13 +17,7 @@ $(() => {
 	const $start = $("<button>").text("Start").attr("id", "start");
 	$("body").append($start);
 
-	const snakePos = [
-		{ tr: 4, td: 5 },
-		{ tr: 3, td: 5 },
-		{ tr: 2, td: 5 },
-		{ tr: 1, td: 5 },
-		{ tr: 0, td: 5 },
-	];
+	const snakePos = [{ tr: rowCell / 2, td: rowCell / 2 }];
 
 	let randPelletteTrVal = Math.floor(Math.random() * rowCell);
 	let randPelletteTdVal = Math.floor(Math.random() * rowCell);
