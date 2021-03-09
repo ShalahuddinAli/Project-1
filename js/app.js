@@ -17,28 +17,37 @@ $(() => {
 	const $start = $("<button>").text("Start").attr("id", "start");
 	$("body").append($start);
 
-	const snakePos = [{ tr: 9, td: 10 }];
-
+	const snakePos = [{ tr: rowCell - 1, td: rowCell / 2 }];
+	const direction = { tr: 1, td: 0 };
+	let speedCoeff = 6;
 	let randPeletteTrVal = Math.floor(Math.random() * rowCell);
 	let randPeletteTdVal = Math.floor(Math.random() * rowCell);
-	let $score = $("div").attr("id", "score").text(0);
 	let currentScore = 0;
+	let $score = $("div")
+		.attr("id", "score")
+		.text("Score: " + currentScore);
 	let lastTail;
 	let pelette;
-	let direction = { tr: 1, td: 0 };
 
-	// auto move
-
+	// const speedAdjuster = () => {
+	// 	if (currentScore > 5) {
+	// 		speedCoeff = 30;
+	// 	}
+	// 	if (currentScore > 10) speedCoeff = 14;
+	// 	if (currentScore > 15) speedCoeff = 18;
+	// 	if (currentScore > 20) speedCoeff = 22;
+	// 	if (currentScore > 25) speedCoeff = 26;
+	// 	if (currentScore > 30) speedCoeff = 30;
+	// 	if (currentScore > 35) speedCoeff = 34;
+	// };
 	// random pelette
 	const randomPelette = () => {
 		randPeletteTrVal = Math.floor(Math.random() * rowCell);
 		randPeletteTdVal = Math.floor(Math.random() * rowCell);
-		// randPeletteTrVal = 4;
-		// randPeletteTdVal = 5;
 		pelette = { tr: randPeletteTrVal, td: randPeletteTdVal };
-		console.log(pelette.tr);
-		snakePos.forEach((i) => {
-			if (pelette.tr === i.tr && pelette.td === i.td) {
+
+		snakePos.forEach((item) => {
+			if (pelette.tr === item.tr && pelette.td === item.td) {
 				randomPelette();
 				console.log("clash");
 			} else {
@@ -50,24 +59,22 @@ $(() => {
 		});
 	};
 	randomPelette();
-	// console.log(pelette);
+
 	const updateScore = () => {
 		// add up to score value
 		currentScore++;
-		$score = $("div").attr("id", "score").text(currentScore);
+		$score.text("Score: " + currentScore);
 	};
 	//add snake tails
 	const addSnake = () => {
 		snakePos.push(lastTail);
-		console.log(lastTail);
 	};
 
-	const drawSnake = () => {
+	const moveSnake = () => {
 		if (snakePos[0].tr === pelette.tr && snakePos[0].td === pelette.td) {
 			addSnake(); // snake length increasess
 			randomPelette(); // make new pelette once its being hit
 			updateScore();
-			console.log("working");
 		} else {
 			$("td").removeClass("snake");
 		}
@@ -77,17 +84,13 @@ $(() => {
 			td: snakePos[0].td - direction.td,
 		});
 		snakePos.pop();
+	};
 
-		for (let i = 0; i < snakePos.length; i++) {
-			let $drawSnakePos = $("#tr" + snakePos[i].tr + "td" + snakePos[i].td);
-			$drawSnakePos.attr("class", "snake");
-			// console.log(3, snakePos);
-		}
-
+	const gameOver = () => {
 		//snake hit its own body
-		snakePos.forEach((i, j) => {
-			if (j > 0) {
-				if (snakePos[0].tr == i.tr && snakePos[0].td == i.td) {
+		snakePos.forEach((item, index) => {
+			if (index > 0) {
+				if (snakePos[0].tr == item.tr && snakePos[0].td == item.td) {
 					alert("GAME OVER!");
 				}
 			}
@@ -100,29 +103,55 @@ $(() => {
 		)
 			alert("GAME OVER!");
 	};
+	const drawSnake = () => {
+		moveSnake();
+		for (let index in snakePos) {
+			let $drawSnakePos = $(
+				"#tr" + snakePos[index].tr + "td" + snakePos[index].td
+			);
+			$drawSnakePos.attr("class", "snake");
+		}
+		gameOver();
+		// speedAdjuster();
+	};
 
-	drawSnake();
 	document.addEventListener("keydown", (e) => {
 		switch (e.keyCode) {
 			case 38:
-				direction.tr = 1;
-				direction.td = 0;
-				break;
+				if (direction.tr === 0) {
+					direction.tr = 1;
+					direction.td = 0;
+					break;
+				} else return;
 			case 39:
-				direction.tr = 0;
-				direction.td = -1;
-				break;
+				if (direction.td === 0) {
+					direction.tr = 0;
+					direction.td = -1;
+					break;
+				} else return;
 			case 40:
-				direction.tr = -1;
-				direction.td = 0;
-				break;
+				if (direction.tr === 0) {
+					direction.tr = -1;
+					direction.td = 0;
+					break;
+				} else return;
 			case 37:
-				direction.tr = 0;
-				direction.td = 1;
-				break;
+				if (direction.td === 0) {
+					direction.tr = 0;
+					direction.td = 1;
+					break;
+				} else return;
 		}
 	});
 	setInterval(() => {
 		drawSnake();
-	}, 200);
+	}, 1000 / speedCoeff);
 });
+
+//create table
+//global variables
+//random pelette
+//snake render
+//start game
+//control snake
+//snake move

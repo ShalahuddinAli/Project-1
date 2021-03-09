@@ -1,7 +1,60 @@
-h1 {
-	color: rebeccapurple;
+body {
+	margin: 0px;
+	padding: 0px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 }
 
-table {
-	border: 5px, dotted, green;
+h1 {
+	font-family: "Emilys Candy", cursive;
+	font-size: 50px;
+}
+
+div {
+	position: relative;
+	right: 190px;
+	text-decoration: underline;
+	font-size: larger;
+}
+
+td {
+	border: 1px;
+	width: 20px;
+	height: 20px;
+}
+
+tr {
+	border: 1px solid #ffff;
+}
+
+#ring {
+	border: 3px solid black;
+	border-radius: 5px;
+	box-shadow: black 20px 10px 50px;
+	background-image: url(/img/Back-ground.png);
+}
+
+.head {
+	background-color: brown;
+}
+
+.snake {
+	background-image: linear-gradient(
+		45deg,
+		#030008 25%,
+		#de2110 25%,
+		#de2110 50%,
+		#030008 50%,
+		#030008 75%,
+		#de2110 75%,
+		#de2110 100%
+	);
+	border-radius: 10px;
+}
+
+.pelette {
+	background-color: rgb(226, 90, 101);
+	border-radius: 7px;
 }
