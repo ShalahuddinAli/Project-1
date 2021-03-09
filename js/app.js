@@ -1,6 +1,6 @@
 $(() => {
 	const $table = $("<table>");
-	$table.attr("id", "ring").attr("cellspacing", "0");
+	$table.attr("id", "ring").attr("cellspacing", "0").attr("border", "black");
 	$("body").append($table);
 	const rowCell = 20;
 
@@ -17,35 +17,40 @@ $(() => {
 	const $start = $("<button>").text("Start").attr("id", "start");
 	$("body").append($start);
 
-	const snakePos = [{ tr: rowCell / 2, td: rowCell / 2 }];
+	const snakePos = [{ tr: 9, td: 10 }];
 
-	let randPelletteTrVal = Math.floor(Math.random() * rowCell);
-	let randPelletteTdVal = Math.floor(Math.random() * rowCell);
-
+	let randPeletteTrVal = Math.floor(Math.random() * rowCell);
+	let randPeletteTdVal = Math.floor(Math.random() * rowCell);
 	let $score = $("div").attr("id", "score").text(0);
 	let currentScore = 0;
+	let lastTail;
+	let pelette;
+	let direction = { tr: 1, td: 0 };
 
 	// auto move
 
-	// random pellette
-	const randomPellette = () => {
-		randPelletteTrVal = Math.floor(Math.random() * rowCell);
-		randPelletteTdVal = Math.floor(Math.random() * rowCell);
-		if (
-			$("#tr" + randPelletteTrVal + "td" + randPelletteTdVal).attr("class") !==
-			"snake"
-		) {
-			let $drawPellete = $(
-				"#tr" + randPelletteTrVal + "td" + randPelletteTdVal
-			);
-			$drawPellete.attr("class", "pellette");
-		} else {
-			randomPellette();
-			console.log("clash");
-		}
+	// random pelette
+	const randomPelette = () => {
+		randPeletteTrVal = Math.floor(Math.random() * rowCell);
+		randPeletteTdVal = Math.floor(Math.random() * rowCell);
+		// randPeletteTrVal = 4;
+		// randPeletteTdVal = 5;
+		pelette = { tr: randPeletteTrVal, td: randPeletteTdVal };
+		console.log(pelette.tr);
+		snakePos.forEach((i) => {
+			if (pelette.tr === i.tr && pelette.td === i.td) {
+				randomPelette();
+				console.log("clash");
+			} else {
+				let $drawPelette = $(
+					"#tr" + randPeletteTrVal + "td" + randPeletteTdVal
+				);
+				$drawPelette.attr("class", "pelette");
+			}
+		});
 	};
-	randomPellette();
-
+	randomPelette();
+	// console.log(pelette);
 	const updateScore = () => {
 		// add up to score value
 		currentScore++;
@@ -53,27 +58,30 @@ $(() => {
 	};
 	//add snake tails
 	const addSnake = () => {
-		snakePos.push({});
-		console.log(snakePos);
+		snakePos.push(lastTail);
+		console.log(lastTail);
 	};
 
 	const drawSnake = () => {
-		if (
-			$("#tr" + snakePos[0].tr + "td" + snakePos[0].td).attr("class") ===
-			"pellette"
-		) {
+		if (snakePos[0].tr === pelette.tr && snakePos[0].td === pelette.td) {
 			addSnake(); // snake length increasess
-			randomPellette(); // make new pellette once its being hit
+			randomPelette(); // make new pelette once its being hit
 			updateScore();
-
-			console.log(snakePos);
+			console.log("working");
 		} else {
 			$("td").removeClass("snake");
 		}
+		lastTail = snakePos[snakePos.length - 1];
+		snakePos.unshift({
+			tr: snakePos[0].tr - direction.tr,
+			td: snakePos[0].td - direction.td,
+		});
+		snakePos.pop();
 
 		for (let i = 0; i < snakePos.length; i++) {
 			let $drawSnakePos = $("#tr" + snakePos[i].tr + "td" + snakePos[i].td);
 			$drawSnakePos.attr("class", "snake");
+			// console.log(3, snakePos);
 		}
 
 		//snake hit its own body
@@ -97,35 +105,24 @@ $(() => {
 	document.addEventListener("keydown", (e) => {
 		switch (e.keyCode) {
 			case 38:
-				snakePos.unshift({ tr: snakePos[0].tr - 1, td: snakePos[0].td });
-				snakePos.pop();
-				drawSnake();
+				direction.tr = 1;
+				direction.td = 0;
 				break;
 			case 39:
-				snakePos.unshift({ tr: snakePos[0].tr, td: snakePos[0].td + 1 });
-				snakePos.pop();
-				drawSnake();
+				direction.tr = 0;
+				direction.td = -1;
 				break;
 			case 40:
-				snakePos.unshift({ tr: snakePos[0].tr + 1, td: snakePos[0].td });
-				snakePos.pop();
-				drawSnake();
+				direction.tr = -1;
+				direction.td = 0;
 				break;
 			case 37:
-				snakePos.unshift({ tr: snakePos[0].tr, td: snakePos[0].td - 1 });
-				snakePos.pop();
-				drawSnake();
+				direction.tr = 0;
+				direction.td = 1;
 				break;
 		}
 	});
-
-	// setInterval(() => {
-	// 	drawSnake();
-	// }, 1000);
-	//start button/reset
-	//snake auto moves
-
-	// const addSnake = () => {
-	// 	snakePos.push({ tr: prevTrValue, td: prevTdValue });
-	// };
+	setInterval(() => {
+		drawSnake();
+	}, 200);
 });
