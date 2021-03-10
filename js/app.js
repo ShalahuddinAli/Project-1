@@ -1,8 +1,24 @@
 $(() => {
+	const rowCell = 20;
+	let snakePos = [
+		{ tr: rowCell - 4, td: rowCell / 2 },
+		{ tr: rowCell - 3, td: rowCell / 2 },
+		{ tr: rowCell - 2, td: rowCell / 2 },
+		{ tr: rowCell - 1, td: rowCell / 2 },
+	];
+	let direction = { tr: 1, td: 0 };
+	let speedCoeff = 6;
+	let currentScore = 0;
+	let $score = $("div")
+		.attr("id", "score")
+		.text("Score: " + currentScore);
+	let resetCheck; // for stopping game loop
+	let lastTail;
+	let pelette;
+
 	const $table = $("<table>");
 	$table.attr("id", "ring").attr("cellspacing", "0").attr("border", "black");
 	$("body").append($table);
-	const rowCell = 20;
 
 	for (let i = 0; i < rowCell; i++) {
 		//rows
@@ -14,39 +30,30 @@ $(() => {
 			$table.append($cell);
 		}
 	}
+	$table.css("opacity", "0.6");
+
 	const $start = $("<button>").text("Start").attr("id", "start");
 	$("body").append($start);
 
-	const snakePos = [{ tr: rowCell - 1, td: rowCell / 2 }];
-	const direction = { tr: 1, td: 0 };
-	let speedCoeff = 6;
-	let randPeletteTrVal = Math.floor(Math.random() * rowCell);
-	let randPeletteTdVal = Math.floor(Math.random() * rowCell);
-	let currentScore = 0;
-	let $score = $("div")
-		.attr("id", "score")
-		.text("Score: " + currentScore);
-	let lastTail;
-	let pelette;
+	const speedAdjuster = () => {
+		if (currentScore > 3) speedCoeff = 7;
+		if (currentScore > 9) speedCoeff = 10;
+		if (currentScore > 14) speedCoeff = 14;
+		if (currentScore > 18) speedCoeff = 18;
+		if (currentScore > 25) speedCoeff = 22;
+		if (currentScore > 35) speedCoeff = 25;
+		if (currentScore > 45) speedCoeff = 30;
+		if (currentScore > 50) speedCoeff = 40;
+	};
 
-	// const speedAdjuster = () => {
-	// 	if (currentScore > 5) {
-	// 		speedCoeff = 30;
-	// 	}
-	// 	if (currentScore > 10) speedCoeff = 14;
-	// 	if (currentScore > 15) speedCoeff = 18;
-	// 	if (currentScore > 20) speedCoeff = 22;
-	// 	if (currentScore > 25) speedCoeff = 26;
-	// 	if (currentScore > 30) speedCoeff = 30;
-	// 	if (currentScore > 35) speedCoeff = 34;
-	// };
 	// random pelette
 	const randomPelette = () => {
-		randPeletteTrVal = Math.floor(Math.random() * rowCell);
-		randPeletteTdVal = Math.floor(Math.random() * rowCell);
+		const randPeletteTrVal = Math.floor(Math.random() * rowCell);
+		const randPeletteTdVal = Math.floor(Math.random() * rowCell);
 		pelette = { tr: randPeletteTrVal, td: randPeletteTdVal };
 
 		snakePos.forEach((item) => {
+			// check for conlict with snake pos.
 			if (pelette.tr === item.tr && pelette.td === item.td) {
 				randomPelette();
 				console.log("clash");
@@ -58,6 +65,7 @@ $(() => {
 			}
 		});
 	};
+
 	randomPelette();
 
 	const updateScore = () => {
@@ -86,12 +94,28 @@ $(() => {
 		snakePos.pop();
 	};
 
-	const gameOver = () => {
+	const reset = () => {
+		snakePos = [
+			{ tr: rowCell - 4, td: rowCell / 2 },
+			{ tr: rowCell - 3, td: rowCell / 2 },
+			{ tr: rowCell - 2, td: rowCell / 2 },
+			{ tr: rowCell - 1, td: rowCell / 2 },
+		];
+		direction = { tr: 1, td: 0 };
+		speedCoeff = 6;
+		currentScore = 0;
+		$score.text("Score: " + currentScore);
+		resetCheck = false;
+		$start.show();
+	};
+
+	const isGameOver = () => {
 		//snake hit its own body
 		snakePos.forEach((item, index) => {
 			if (index > 0) {
 				if (snakePos[0].tr == item.tr && snakePos[0].td == item.td) {
-					alert("GAME OVER!");
+					$table.css("opacity", "0.6");
+					reset();
 				}
 			}
 		});
@@ -100,8 +124,11 @@ $(() => {
 			snakePos[0].tr === rowCell || // going outside of bottom border
 			snakePos[0].td === -1 || // going outside of left border
 			snakePos[0].td === rowCell //going outside of right border
-		)
-			alert("GAME OVER!");
+		) {
+			// alert(`GAME OVER! your score: ${currentScore}`);
+			$table.css("opacity", "0.6");
+			reset();
+		}
 	};
 	const drawSnake = () => {
 		moveSnake();
@@ -111,8 +138,8 @@ $(() => {
 			);
 			$drawSnakePos.attr("class", "snake");
 		}
-		gameOver();
-		// speedAdjuster();
+		isGameOver();
+		speedAdjuster();
 	};
 
 	document.addEventListener("keydown", (e) => {
@@ -143,9 +170,20 @@ $(() => {
 				} else return;
 		}
 	});
-	setInterval(() => {
-		drawSnake();
-	}, 1000 / speedCoeff);
+	const main = () => {
+		if (resetCheck === true) {
+			$table.css("opacity", "1");
+			setTimeout(() => {
+				drawSnake();
+				main();
+			}, 1000 / speedCoeff);
+		}
+	};
+	$start.on("click", function () {
+		resetCheck = true;
+		main();
+		$("#start").hide();
+	});
 });
 
 //create table

@@ -5,6 +5,8 @@ body {
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	background-image: url(/img/body.jpg);
+	background-size: cover;
 }
 
 h1 {
@@ -33,7 +35,7 @@ tr {
 	border: 3px solid black;
 	border-radius: 5px;
 	box-shadow: black 20px 10px 50px;
-	background-image: url(/img/Back-ground.png);
+	background-image: url(/img/game_board.png);
 }
 
 .head {
@@ -57,4 +59,29 @@ tr {
 .pelette {
 	background-color: rgb(226, 90, 101);
 	border-radius: 7px;
+}
+
+#start {
+	position: absolute;
+	top: 400px;
+	padding: 15px 25px;
+	font-size: 24px;
+	text-align: center;
+	cursor: pointer;
+	outline: none;
+	color: #fff;
+	background-color: #2f21a8;
+	border: none;
+	border-radius: 15px;
+	box-shadow: 0 9px #999;
+}
+
+#start:hover {
+	background-color: #3e8e41;
+}
+
+#start:active {
+	background-color: #3e8e41;
+	box-shadow: 0 5px #666;
+	transform: translateY(4px);
 }
