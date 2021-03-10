@@ -1,7 +1,7 @@
 $(() => {
-	const rowCell = 20;
+	const rowCell = 24;
 	const eatSound = new Audio("audio/eatPalette.mpeg");
-	const loseSound = new Audio("audio/lose.mp3");
+	const loseSound = new Audio("audio/loser.wav");
 	let snakePos = [
 		{ tr: rowCell - 4, td: rowCell / 2 },
 		{ tr: rowCell - 3, td: rowCell / 2 },
@@ -11,12 +11,17 @@ $(() => {
 	let direction = { tr: 1, td: 0 };
 	let speedCoeff = 6;
 	let currentScore = 0;
-	let $score = $("div")
+	let $score = $("div:first")
 		.attr("id", "score")
-		.text("Score: " + currentScore);
+		.text("Score: " + currentScore)
+		.hide();
+	let $gameOver = $("div:last").attr("id", "game-over").hide();
 	let resetCheck; // for stopping game loop
 	let lastTail;
 	let pelette;
+
+	const $start = $("<button>").text("Start").attr("id", "start");
+	$("body").append($start);
 
 	const $table = $("<table>");
 	$table.attr("id", "ring").attr("cellspacing", "0").attr("border", "black");
@@ -32,10 +37,7 @@ $(() => {
 			$table.append($cell);
 		}
 	}
-	$table.css("opacity", "0.6");
-
-	const $start = $("<button>").text("Start").attr("id", "start");
-	$("body").append($start);
+	$table.css("opacity", "0.5");
 
 	const speedAdjuster = () => {
 		if (currentScore > 3) speedCoeff = 7;
@@ -110,6 +112,7 @@ $(() => {
 		currentScore = 0;
 		$score.text("Score: " + currentScore);
 		resetCheck = false;
+		$start.text("Restart");
 		setTimeout(() => {
 			$start.show(); // letting the lose music ends first
 		}, 3500);
@@ -120,8 +123,11 @@ $(() => {
 		snakePos.forEach((item, index) => {
 			if (index > 0) {
 				if (snakePos[0].tr == item.tr && snakePos[0].td == item.td) {
-					$table.css("opacity", "0.4");
 					loseSound.play();
+					$table.css("opacity", "0.5");
+					$gameOver.text(`Your Score: ${currentScore}`);
+					$gameOver.show();
+					$score.hide();
 					reset();
 				}
 			}
@@ -132,8 +138,11 @@ $(() => {
 			snakePos[0].td === -1 || // going outside of left border
 			snakePos[0].td === rowCell //going outside of right border
 		) {
-			$table.css("opacity", "0.6");
 			loseSound.play();
+			$table.css("opacity", "0.5");
+			$gameOver.text(`Your Score: ${currentScore}`);
+			$gameOver.show();
+			$score.hide();
 			reset();
 		}
 	};
@@ -188,7 +197,9 @@ $(() => {
 	};
 	$start.on("click", function () {
 		resetCheck = true;
+		$gameOver.hide();
+		$start.hide();
+		$score.show();
 		main();
-		$("#start").hide();
 	});
 });

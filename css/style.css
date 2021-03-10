@@ -1,3 +1,7 @@
+html {
+	height: 100%;
+}
+
 body {
 	margin: 0px;
 	padding: 0px;
@@ -7,6 +11,9 @@ body {
 	align-items: center;
 	background-image: url(/img/body.jpg);
 	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	height: 100%;
 }
 
 h1 {
@@ -14,13 +21,9 @@ h1 {
 	font-size: 50px;
 	letter-spacing: 10px;
 	text-shadow: #030008;
-}
-
-div {
+	margin: 10px 0 20px 0;
 	position: relative;
-	right: 180px;
-	text-decoration: underline;
-	font-size: x-large;
+	top: -30px;
 }
 
 td {
@@ -61,21 +64,47 @@ tr {
 	border-radius: 5px;
 	box-shadow: black 20px 10px 50px;
 	background-image: url(/img/game_board.png);
+	position: relative;
+	top: -40px;
+}
+
+#score {
+	position: relative;
+	right: 220px;
+	text-decoration: underline;
+	font-size: x-large;
+	top: -40px;
+	font-family: "Kanit", sans-serif;
+}
+
+#game-over {
+	background-color: #0b61cd;
+	color: #fff;
+	top: 300px;
+	font-size: 50px;
+	position: absolute;
+	border-radius: 15px;
+	padding: 10px 25px;
+	z-index: 1;
+	font-family: "Kanit", sans-serif;
 }
 
 #start {
+	letter-spacing: 3px;
 	position: absolute;
-	top: 400px;
-	padding: 15px 25px;
+	top: 450px;
+	padding: 10px 25px;
 	font-size: 24px;
 	text-align: center;
 	cursor: pointer;
 	outline: none;
 	color: #fff;
-	background-color: #2f21a8;
+	background-color: #0b61cd;
 	border: none;
 	border-radius: 15px;
 	box-shadow: 0 9px #999;
+	font-family: "Kanit", sans-serif;
+	z-index: 1;
 }
 
 #start:hover {
