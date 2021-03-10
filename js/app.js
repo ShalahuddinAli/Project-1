@@ -110,7 +110,9 @@ $(() => {
 		currentScore = 0;
 		$score.text("Score: " + currentScore);
 		resetCheck = false;
-		$start.show();
+		setTimeout(() => {
+			$start.show(); // letting the lose music ends first
+		}, 3500);
 	};
 
 	const isGameOver = () => {
@@ -130,7 +132,6 @@ $(() => {
 			snakePos[0].td === -1 || // going outside of left border
 			snakePos[0].td === rowCell //going outside of right border
 		) {
-			// alert(`GAME OVER! your score: ${currentScore}`);
 			$table.css("opacity", "0.6");
 			loseSound.play();
 			reset();
@@ -191,11 +192,3 @@ $(() => {
 		$("#start").hide();
 	});
 });
-
-//create table
-//global variables
-//random pelette
-//snake render
-//start game
-//control snake
-//snake move
