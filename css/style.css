@@ -12,13 +12,15 @@ body {
 h1 {
 	font-family: "Emilys Candy", cursive;
 	font-size: 50px;
+	letter-spacing: 10px;
+	text-shadow: #030008;
 }
 
 div {
 	position: relative;
-	right: 190px;
+	right: 180px;
 	text-decoration: underline;
-	font-size: larger;
+	font-size: x-large;
 }
 
 td {
@@ -29,13 +31,6 @@ td {
 
 tr {
 	border: 1px solid #ffff;
-}
-
-#ring {
-	border: 3px solid black;
-	border-radius: 5px;
-	box-shadow: black 20px 10px 50px;
-	background-image: url(/img/game_board.png);
 }
 
 .head {
@@ -59,6 +54,13 @@ tr {
 .pelette {
 	background-color: rgb(226, 90, 101);
 	border-radius: 7px;
+}
+
+#ring {
+	border: 3px solid black;
+	border-radius: 5px;
+	box-shadow: black 20px 10px 50px;
+	background-image: url(/img/game_board.png);
 }
 
 #start {

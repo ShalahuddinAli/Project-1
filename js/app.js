@@ -1,5 +1,7 @@
 $(() => {
 	const rowCell = 20;
+	const eatSound = new Audio("audio/eatPalette.mpeg");
+	const loseSound = new Audio("audio/lose.mp3");
 	let snakePos = [
 		{ tr: rowCell - 4, td: rowCell / 2 },
 		{ tr: rowCell - 3, td: rowCell / 2 },
@@ -83,6 +85,8 @@ $(() => {
 			addSnake(); // snake length increasess
 			randomPelette(); // make new pelette once its being hit
 			updateScore();
+			eatSound.currentTime = 0;
+			eatSound.play();
 		} else {
 			$("td").removeClass("snake");
 		}
@@ -114,7 +118,8 @@ $(() => {
 		snakePos.forEach((item, index) => {
 			if (index > 0) {
 				if (snakePos[0].tr == item.tr && snakePos[0].td == item.td) {
-					$table.css("opacity", "0.6");
+					$table.css("opacity", "0.4");
+					loseSound.play();
 					reset();
 				}
 			}
@@ -127,6 +132,7 @@ $(() => {
 		) {
 			// alert(`GAME OVER! your score: ${currentScore}`);
 			$table.css("opacity", "0.6");
+			loseSound.play();
 			reset();
 		}
 	};
@@ -149,25 +155,25 @@ $(() => {
 					direction.tr = 1;
 					direction.td = 0;
 					break;
-				} else return;
+				} else break;
 			case 39:
 				if (direction.td === 0) {
 					direction.tr = 0;
 					direction.td = -1;
 					break;
-				} else return;
+				} else break;
 			case 40:
 				if (direction.tr === 0) {
 					direction.tr = -1;
 					direction.td = 0;
 					break;
-				} else return;
+				} else break;
 			case 37:
 				if (direction.td === 0) {
 					direction.tr = 0;
 					direction.td = 1;
 					break;
-				} else return;
+				} else break;
 		}
 	});
 	const main = () => {
