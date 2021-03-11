@@ -37,7 +37,8 @@ tr {
 }
 
 .head {
-	background-color: brown;
+	background-color: #de2110;
+	border-radius: 6px;
 }
 
 .snake {
@@ -55,8 +56,8 @@ tr {
 }
 
 .pelette {
-	background-color: rgb(226, 90, 101);
-	border-radius: 7px;
+	background-color: brown;
+	border-radius: 10px 5px;
 }
 
 #ring {

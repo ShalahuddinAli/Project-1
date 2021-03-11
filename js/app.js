@@ -8,7 +8,7 @@ $(() => {
 		{ tr: rowCell - 2, td: rowCell / 2 },
 		{ tr: rowCell - 1, td: rowCell / 2 },
 	];
-	let direction = { tr: 1, td: 0 };
+	let direction = { tr: 1, td: 0 }; // "+1" going Up and Left, "-1" Down and Right
 	let speedCoeff = 6;
 	let currentScore = 0;
 	let $score = $("div:first")
@@ -60,7 +60,6 @@ $(() => {
 			// check for conlict with snake pos.
 			if (pelette.tr === item.tr && pelette.td === item.td) {
 				randomPelette();
-				console.log("clash");
 			} else {
 				let $drawPelette = $(
 					"#tr" + randPeletteTrVal + "td" + randPeletteTdVal
@@ -87,10 +86,10 @@ $(() => {
 			addSnake(); // snake length increasess
 			randomPelette(); // make new pelette once its being hit
 			updateScore();
-			eatSound.currentTime = 0;
+			eatSound.currentTime = 0; // allow for replaying the sound without completing the prev played sound
 			eatSound.play();
 		} else {
-			$("td").removeClass("snake");
+			$("td").removeClass("snake").removeClass("head");
 		}
 		lastTail = snakePos[snakePos.length - 1];
 		snakePos.unshift({
@@ -122,6 +121,7 @@ $(() => {
 		//snake hit its own body
 		snakePos.forEach((item, index) => {
 			if (index > 0) {
+				// to ommit snackPos[0]
 				if (snakePos[0].tr == item.tr && snakePos[0].td == item.td) {
 					loseSound.play();
 					$table.css("opacity", "0.5");
@@ -148,12 +148,14 @@ $(() => {
 	};
 	const drawSnake = () => {
 		moveSnake();
-		for (let index in snakePos) {
+		for (let i = 0; i < snakePos.length; i++) {
 			let $drawSnakePos = $(
-				"#tr" + snakePos[index].tr + "td" + snakePos[index].td
+				"#tr" + snakePos[i].tr + "td" + snakePos[i].td // assigning snake parts(object) to its corresponding cell
 			);
-			$drawSnakePos.attr("class", "snake");
+			$drawSnakePos.attr("class", "snake"); //class assingment is for coloring of snake body.
+			if (i === 0) $drawSnakePos.attr("class", "head");
 		}
+
 		isGameOver();
 		speedAdjuster();
 	};
