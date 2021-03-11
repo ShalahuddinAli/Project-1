@@ -162,7 +162,7 @@ $(() => {
 		speedAdjuster();
 	};
 
-	document.addEventListener("keydown", (e) => {
+	$(document).on("keydown", (e) => {
 		switch (e.keyCode) {
 			case 38:
 				if (direction.tr === 0) {
