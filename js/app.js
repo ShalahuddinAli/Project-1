@@ -8,7 +8,6 @@ $(() => {
 		{ tr: rowCell - 2, td: rowCell / 2 },
 		{ tr: rowCell - 1, td: rowCell / 2 },
 	];
-	let direction = { tr: 1, td: 0 }; // "+1" going Up and Left, "-1" Down and Right
 	let speedCoeff = 6;
 	let currentScore = 0;
 	let $score = $("div:first")
@@ -17,6 +16,7 @@ $(() => {
 		.hide();
 	let $gameOver = $("div:last").attr("id", "game-over").hide();
 	let resetCheck; // for stopping game loop
+	let direction; // "+1" going Up and Left, "-1" Down and Right
 	let lastTail;
 	let pelette;
 
@@ -59,7 +59,7 @@ $(() => {
 		snakePos.forEach((item) => {
 			// check for conlict with snake pos.
 			if (pelette.tr === item.tr && pelette.td === item.td) {
-				randomPelette();
+				randomPelette(); //loop the function back if conflict occured
 			} else {
 				let $drawPelette = $(
 					"#tr" + randPeletteTrVal + "td" + randPeletteTdVal
@@ -68,8 +68,6 @@ $(() => {
 			}
 		});
 	};
-
-	randomPelette();
 
 	const updateScore = () => {
 		// add up to score value
@@ -112,8 +110,9 @@ $(() => {
 		$score.text("Score: " + currentScore);
 		resetCheck = false;
 		$start.text("Restart");
+		$("td").removeClass("snake").removeClass("head").removeClass("pelette");
 		setTimeout(() => {
-			$start.show(); // letting the lose music ends first
+			$start.show(); // letting the game-over music ends first
 		}, 3500);
 	};
 
@@ -152,8 +151,11 @@ $(() => {
 			let $drawSnakePos = $(
 				"#tr" + snakePos[i].tr + "td" + snakePos[i].td // assigning snake parts(object) to its corresponding cell
 			);
-			$drawSnakePos.attr("class", "snake"); //class assingment is for coloring of snake body.
-			if (i === 0) $drawSnakePos.attr("class", "head");
+			if (i === 0) {
+				$drawSnakePos.attr("class", "head");
+			} else {
+				$drawSnakePos.attr("class", "snake"); //class assingment is for coloring of snake body.
+			}
 		}
 
 		isGameOver();
@@ -202,6 +204,8 @@ $(() => {
 		$gameOver.hide();
 		$start.hide();
 		$score.show();
+		direction = { tr: 1, td: 0 };
+		randomPelette();
 		main();
 	});
 });
