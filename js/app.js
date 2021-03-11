@@ -204,7 +204,7 @@ $(() => {
 		$gameOver.hide();
 		$start.hide();
 		$score.show();
-		direction = { tr: 1, td: 0 };
+		direction = { tr: 1, td: 0 }; // to prevent directional change before game start
 		randomPelette();
 		main();
 	});
